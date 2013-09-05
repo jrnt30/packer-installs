@@ -2,27 +2,54 @@
   "provisioners": [
     {
       "type": "shell",
-      "scripts": [
-        "scripts/base.sh",
-        "scripts/ruby.sh",
-        "scripts/chef.sh",
-        "scripts/puppet.sh",
-        "scripts/vagrant.sh",
-        "scripts/virtualbox.sh",
-        "scripts/cleanup.sh",
-        "scripts/zerodisk.sh"
-      ],
       "override": {
+        "amazon-ebs": {
+          "scripts" : [
+            "scripts/base.sh",
+            "scripts/ruby.sh",
+            "scripts/chef.sh",
+            "scripts/puppet.sh",
+            "scripts/remove_auth.sh"
+          ]
+        },
         "virtualbox": {
-          "execute_command": "echo 'veewee'|sudo -S sh '{{.Path}}'"
+          "execute_command": "echo 'packer'|sudo -S sh '{{.Path}}'", 
+          "scripts" : [
+            "scripts/base.sh",
+            "scripts/ruby.sh",
+            "scripts/chef.sh",
+            "scripts/puppet.sh",
+            "scripts/vagrant.sh",
+            "scripts/virtualbox.sh",
+            "scripts/zerodisk.sh",
+            "scripts/cleanup.sh"
+          ]
         },
         "vmware": {
-          "execute_command": "echo 'veewee'|sudo -S sh '{{.Path}}'"
+          "execute_command": "echo 'packer'|sudo -S sh '{{.Path}}'", 
+          "scripts" : [
+            "scripts/base.sh",
+            "scripts/ruby.sh",
+            "scripts/chef.sh",
+            "scripts/puppet.sh",
+            "scripts/vagrant.sh",
+            "scripts/zerodisk.sh",
+            "scripts/cleanup.sh"
+          ]
         }
       }
     }
   ],
   "builders": [
+    {
+        "type": "amazon-ebs", 
+        "ami_name": "Centos 6.4 Puppet-Ready", 
+        "instance_type": "t1.micro", 
+        "region": "us-east-1", 
+        "source_ami": "ami-eb6b0182", 
+        "ssh_timeout": "5m", 
+        "ssh_username": "root"
+    }, 
     {
       "type": "virtualbox",
       "boot_command": [
@@ -35,11 +62,11 @@
       "iso_checksum": "bb9af2aea1344597e11070abe6b1fcd3",
       "iso_checksum_type": "md5",
       "iso_url": "http://bay.uchicago.edu/centos/6.4/isos/x86_64/CentOS-6.4-x86_64-netinstall.iso",
-      "ssh_username": "veewee",
-      "ssh_password": "veewee",
+      "ssh_username": "packer",
+      "ssh_password": "packer",
       "ssh_port": 22,
       "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'veewee'|sudo -S sh 'shutdown.sh'",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'packer'|sudo -S sh 'shutdown.sh'",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
       "vboxmanage": [
@@ -69,11 +96,11 @@
       "iso_checksum": "bb9af2aea1344597e11070abe6b1fcd3",
       "iso_checksum_type": "md5",
       "iso_url": "http://www.mirrorservice.org/sites/mirror.centos.org/6.4/isos/x86_64/CentOS-6.4-x86_64-netinstall.iso",
-      "ssh_username": "veewee",
-      "ssh_password": "veewee",
+      "ssh_username": "packer",
+      "ssh_password": "packer",
       "ssh_port": 22,
       "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'veewee'|sudo -S sh 'shutdown.sh'",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'packer'|sudo -S sh 'shutdown.sh'",
       "vmx_data": {
         "memsize": "480",
         "numvcpus": "1",
